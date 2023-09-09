@@ -1,0 +1,146 @@
+{% extends "weatherapp/base.html" %}
+{% block container %}
+<section class="container">
+    <h1 class="text-center">WEATHER APP <br>
+        {% if messages %}
+        {%for message in messages %}
+        <p class="text-danger">{{message}}</p>
+        {% endfor %}
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <a class="btn btn-dark small px-5 rounded-5 mb-3" href="{% url 'weatherapp:history' %}">
+            {{request.user.username}}'s History</a>
+        {% else %}
+        <a class="btn btn-dark small px-5 rounded-5 mb-3" href="{% url 'weatherapp:signup' %}">
+            Login For More Features </a>
+        {% endif %}
+    </h1>
+    <div>
+        <form action="{% url 'weatherapp:indexPage' %}" method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <input type="text" class="form-control rounded-5 border-2 border-black me-1 small" id="submit-form"
+                    placeholder="Enter City Name" name="location" required>
+                <input class="btn btn-dark small px-sm-5 px-sm-0 rounded-5" type="submit" id="submit-btn"></input>
+            </div>
+        </form>
+    </div>
+    <div class="weather-container">
+        <div class="weather-card">
+            <div class="position-absolute">
+                <button class="btn btn-dark small px-lg-5 rounded-5 border-2 border-light"
+                    id="converter-btn">faranite</button>
+            </div>
+            <img src="{{weather.current.condition.icon}}" alt="">
+            <p>{{weather.current.condition.text}}</p>
+            <h1 class="converter">{{weather.current.temp_c}} °C</h1>
+            <p>{{weather.location.name}}</p>
+            <small class="fw-bold">{{weather.location.localtime}}</small>
+        </div>
+
+        <div class="weather-info">
+            <div>
+                <div class="info-card">
+                    <img src="https://img.icons8.com/?size=512&id=cWfpk9mCJWJm&format=png" alt="">
+                    <p>Max Temp</p>
+                    <h1 class="converter">{{max_temp}} °C</h1>
+                    <p>Avg. Temp {{avg_temp}} °C</p>
+                </div>
+                <div class="info-card mt-2">
+                    <img src="https://img.icons8.com/?size=512&id=cWfpk9mCJWJm&format=png" alt="">
+                    <p>Min Temp</p>
+                    <h1 class="converter">{{min_temp}} °C</h1>
+                    <p>Avg. Temp {{avg_temp}} °C</p>
+                </div>
+            </div>
+            <div class="info">
+                <li><img src="https://img.icons8.com/?size=512&id=uVHiOKL11CSm&format=png" alt=""> Country : <span>
+                        {{weather.location.country}} </span></li>
+                <li><img src="https://img.icons8.com/?size=512&id=jws4rTJ5EmwZ&format=png" alt=""> Humidity : <span>
+                        {{weather.current.humidity}} </span></li>
+                <li><img src="https://img.icons8.com/?size=512&id=IElX1wiyMLvr&format=png" alt=""> Lattitude :
+                    <span>
+                        {{weather.location.lat}} </span>
+                </li>
+                <li><img src="https://img.icons8.com/?size=512&id=IElX1wiyMLvr&format=png" alt=""> Longitude :
+                    <span>
+                        {{weather.location.lon}} </span>
+                </li>
+                <li><img src="https://img.icons8.com/?size=512&id=7zTWILFwDf7H&format=png" alt=""> Wind Speed :
+                    <span>
+                        1.11 </span>
+                </li>
+            </div>
+        </div>
+    </div>
+    <div class="weather-container mt-2 hour-weather">
+        {% for hour in hourly_temp %}
+        {% if forloop.counter|divisibleby:2%}
+        {% else %}
+        <div class="hour-card py-3">
+            <h3 class="converter">{{hour.temp_c}} °C</h3>
+            <strong>
+                <p>{{hour.time|slice:"11:18"}}</p>
+            </strong>
+            <button class="btn btn-dark small px-5 rounded-5">
+                {% if hour.is_day %}
+                Day
+                {% else %}
+                Night
+                {% endif %}
+            </button>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container">
+    <div class="about-page mt-lg-3 mt-2">
+        <div class="about-image">
+            <img src="https://img.freepik.com/premium-vector/3d-realistic-cloudy-sunny-cloud-isolated-blue-background_582047-160.jpg"
+                alt="place-image" class="rounded-2">
+        </div>
+        <div class="about-content ms-3">
+            <h3>{{weather.location.name}}</h3>
+            <p class="fw-bold">Know something ? </p>
+            <p>{{about_place}}...</p>
+            <span class="float-end">~ AI</span>
+        </div>
+    </div>
+</section>
+
+<script>
+    /*******************
+    Temparature Converter
+    ********************/
+    const convert_btn = document.getElementById("converter-btn")
+    const convert_elements = document.querySelectorAll(".converter");
+
+    convert_btn.addEventListener('click', () => {
+        if (convert_btn.innerText == "faranite") {
+            convert_elements.forEach((element) => {
+                let inner_val = ((parseFloat(element.innerText) * 9 / 5) + 32).toFixed(1)
+                element.innerText = `${inner_val} °F`
+            });
+            convert_btn.innerText = "celsius";
+        } else {
+            convert_elements.forEach((element) => {
+                let inner_val = ((parseFloat(element.innerText) - 32) * 5 / 9).toFixed(1)
+                element.innerText = `${inner_val} °C`
+            });
+            convert_btn.innerText = "faranite";
+        }
+    })
+
+
+    /*******************
+    Loader
+    ********************/
+    $(window).load(function () {
+        $(".preloader").delay(5000).fadeOut("slow");
+        $("#overlayer").delay(5000).fadeOut("slow");
+    })
+</script>
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "weatherapp/base.html" %}
+
+{% block container %}
+<h3 class="text-center">HISTORY</h3>
+<div class="weather-container mt-2 hour-weather " style="max-width: 800px;margin: 0 auto;">
+    {% for history in histories %}
+    <div class="hour-card py-3">
+        <h3 class="converter" style="font-size: .8rem;">{{history.location}}</h3>
+        <strong>
+            <p style="font-size: .7rem;">{{history.created}}</p>
+        </strong>
+        <button class="btn btn-dark small px-5 rounded-5" style="font-size: .7rem;">
+            {{history.temperature}} °C
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'weatherapp/base.html' %}
+
+{% block container %}
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100" style="text-align: center;">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card text-white" style="border-radius: 1rem; background-color: #111;">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-md-5 mt-md-4 pb-5">
+                            <h2 class="fw-bold mb-2 text-uppercase">Signup</h2>
+                            <p class="text-white-50 mb-5">Please enter the details</p>
+
+                            <form action="{% url 'weatherapp:signup' %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="typeEmailX">Username</label>
+                                    <input type="text" name="signup-username" class="form-control form-control" />
+                                </div>
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="typeEmailX">Email</label>
+                                    <input type="email" name="signup-email" class="form-control form-control" />
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="typePasswordX">Password</label>
+                                    <input type="password" name="signup-password1" class="form-control form-control" />
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <label class="form-label" for="typePasswordX">Confirm Password</label>
+                                    <input type="password" name="signup-password2" class="form-control form-control" />
+                                </div>
+                                <button class="btn btn-outline-light px-5" type="submit">Singup</button>
+                                {% if messages %}
+                                   {%for message in messages %}
+                                      <br>{{message}}
+                                   {% endfor %}
+                                {% endif %}
+                            </form>
+                        </div>
+
+                        <div>
+                            <p class="mb-0">have an account? <a href="{% url 'weatherapp:login' %}" class="text-white-50 fw-bold small"><br>Log
+                                    In</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
